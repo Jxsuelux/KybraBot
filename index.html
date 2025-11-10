@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aivora AI</title>
+    <style>
+        /* Estilos generales para celular */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            text-align: center;
+            overflow-x: hidden;
+        }
+        header {
+            background-color: #fff;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        header h1 {
+            color: #333;
+            margin-top: 5px;
+            font-size: 1.5em;
+        }
+        header p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .container {
+            padding: 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px 24px;
+            margin: 5px 0;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #20D8C9; /* CAMBIO DE COLOR AQUÍ */
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+        .btn-secondary {
+            background-color: #eee;
+            color: #333;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        .chart-image {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-top: 1px solid #eee;
+            color: #777;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .logo {
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .header-top {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Estilos para "How It Works" */
+        #how-it-works {
+            padding: 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        #how-it-works h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #how-it-works .steps-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #how-it-works .step {
+            width: 80%;
+            min-width: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        #how-it-works .step img {
+            height: 50px;
+            margin-bottom: 10px;
+        }
+        #how-it-works .step h3 {
+            margin-bottom: 10px;
+        }
+
+        /* Oculta el input file (pero lo mantiene funcional) */
+        #upload-chart {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        /* Estilo para el label que simula el botón */
+        .upload-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #20D8C9; /* CAMBIO DE COLOR AQUÍ */
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Estilos para la imagen subida (ahora más pequeña) */
+        #uploaded-image {
+            max-width: 50%;
+            height: auto;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        /* Estilos para la predicción */
+        #prediction {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .buy {
+            color: green;
+        }
+
+        .sell {
+            color: red;
+        }
+
+        /* Contenedor para la imagen y la predicción */
+        #image-prediction-container {
+            margin-bottom: 20px;
+        }
+
+        /* Estilo para el botón "Analyze Chart" */
+        #analyze-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #7952b3;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Estilos para el diagrama de riesgo */
+        #risk-diagram {
+            width: 90%;
+            margin: 20px auto;
+            position: relative;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        /* Línea base */
+        #risk-diagram::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            right: 20px;
+            height: 4px;
+            background-color: #ddd;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        /* Puntos (SL, Entry, TP1, TP2) */
+        .risk-point {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .sl {
+            background-color: #f44336; /* Rojo */
+            left: 0;
+        }
+
+        .entry {
+            background-color: #2196f3; /* Azul */
+            left: calc(33.33% - 15px); /* Ajusta la posición */
+        }
+
+        .tp1 {
+            background-color: #4caf50; /* Verde */
+            right: calc(33.33% - 15px); /* Ajusta la posición */
+        }
+
+        .tp2 {
+            background-color: #4caf50; /* Verde */
+            right: 0;
+        }
+
+        /* Etiquetas (SL, Entry, TP1, TP2) */
+        .risk-label {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9em;
+            color: #777;
+            white-space: nowrap; /* Evita que las etiquetas se rompan */
+        }
+
+        /* Líneas verticales */
+        .risk-point::before {
+            content: "";
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            bottom: -10px;
+            width: 2px;
+            background-color: #ddd;
+            transform: translateX(-50%);
+        }
+
+        /* Flecha */
+        .arrow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2em;
+            color: #999;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <img src="snaptrader-logo.png" alt="SnapTrader AI Logo" class="logo">
+            <h1>Kybra AI</h1>
+        </div>
+        <p>Skip the gurus. Trust the data.</p>
+        <p>AI-driven market insights built on data, precision, and proven algorithms.</p>
+        <a href="#" class="btn">Analyze a Chart</a>
+        <a href="#" class="btn btn-secondary">View Pricing</a>
+    </header>
+
+    <div class="container">
+        <img src="trading-chart.png" alt="Trading Chart" class="chart-image">
+    </div>
+
+    <section id="how-it-works">
+        <h2>How It Works</h2>
+        <p style="text-align: center;">Three simple steps to better trades</p>
+        <div class="steps-container">
+            <div class="step">
+                <img src="upload-icon.png" alt="Upload Icon">
+                <h3>Upload</h3>
+                <p>Upload your chart or connect your favorite trading platform for instant access to analytics.</p>
+                <!-- Input file oculto -->
+                <input type="file" id="upload-chart" name="upload-chart" accept="image/*">
+                <!-- Label que simula el botón -->
+                <label for="upload-chart" class="upload-btn">Seleccionar archivo</label>
+            </div>
+
+            <!-- Contenedor para la imagen, el diagrama de riesgo y la predicción (ENTRE LOS PASOS) -->
+            <div id="image-prediction-container" style="display: none;">
+                <img src="#" id="uploaded-image" alt="Imagen Subida">
+                <!-- Diagrama de riesgo -->
+                <div id="risk-diagram" style="display: none;">
+                    <div class="risk-point sl">
+                        <div class="risk-label">SL</div>
+                    </div>
+                    <div class="risk-point entry">
+                        <div class="risk-label">Entry</div>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="risk-point tp1">
+                        <div class="risk-label">TP1</div>
+                    </div>
+                    <div class="risk-point tp2">
+                        <div class="risk-label">TP2</div>
+                    </div>
+                </div>
+                <div id="prediction"></div>
+            </div>
+
+            <!-- Botón "Analyze Chart" -->
+            <div id="analyze-button" style="display: none;">Analyze Chart</div>
+
+            <div class="step">
+                <img src="ai-analysis-icon.png" alt="AI Analysis Icon">
+                <h3>AI Analysis</h3>
+                <p>Our AI scans for proven patterns and key support/resistance levels in seconds.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Kybra AI</p>
+    </footer>
+
+    <script>
+        // Obtén los elementos
+        const uploadInput = document.getElementById('upload-chart');
+        const uploadLabel = document.querySelector('label[for="upload-chart"]');
+        const uploadedImage = document.getElementById('uploaded-image');
+        const predictionDiv = document.getElementById('prediction');
+        const imagePredictionContainer = document.getElementById('image-prediction-container');
+        const analyzeButton = document.getElementById('analyze-button');
+        const riskDiagram = document.getElementById('risk-diagram');
+
+        // Agrega un event listener al input file
+        uploadInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+
+            if (file) {
+                // Muestra el nombre del archivo en el label
+                uploadLabel.textContent = file.name;
+
+                // Muestra la imagen subida
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImage.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+
+                // Muestra el contenedor de la imagen y el botón "Analyze Chart"
+                imagePredictionContainer.style.display = 'block';
+                analyzeButton.style.display = 'inline-block';
+            } else {
+                // Si no se selecciona ningún archivo
+                uploadLabel.textContent = 'Seleccionar archivo';
+                uploadedImage.src = '#';
+                imagePredictionContainer.style.display = 'none';
+                analyzeButton.style.display = 'none';
+                predictionDiv.textContent = '';
+                predictionDiv.className = '';
+                riskDiagram.style.display = 'none'; // Oculta el diagrama
+            }
+        });
+
+        // Agrega un event listener al botón "Analyze Chart"
+        analyzeButton.addEventListener('click', function() {
+            // Oculta el botón "Analyze Chart"
+            analyzeButton.style.display = 'none';
+
+            // Muestra el diagrama de riesgo
+            riskDiagram.style.display = 'block';
+
+            // Simula la predicción después de 10 segundos
+            setTimeout(function() {
+                // Genera una predicción aleatoria
+                const random = Math.random();
+                let prediction = '';
+                let className = '';
+
+                if (random < 0.5) {
+                    prediction = 'BUY';
+                    className = 'buy';
+                } else {
+                    prediction = 'SELL';
+                    className = 'sell';
+                }
+
+                // Muestra la predicción
+                predictionDiv.textContent = 'Predicción: ' + prediction;
+                predictionDiv.className = className; // Aplica la clase para el color
+            }, 10000); // 10 segundos
+        });
+    </script>
+</body>
+</html>
