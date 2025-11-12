@@ -268,6 +268,13 @@
             color: #999;
             z-index: 2;
         }
+
+        /* Estilos para la recomendación */
+        #recommendation {
+            font-size: 1em;
+            margin-top: 5px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -320,6 +327,7 @@
                     </div>
                 </div>
                 <div id="prediction"></div>
+                <div id="recommendation"></div> <!-- Aquí se mostrará la recomendación -->
             </div>
 
             <!-- Botón "Analyze Chart" -->
@@ -346,6 +354,7 @@
         const imagePredictionContainer = document.getElementById('image-prediction-container');
         const analyzeButton = document.getElementById('analyze-button');
         const riskDiagram = document.getElementById('risk-diagram');
+        const recommendationDiv = document.getElementById('recommendation'); // Nuevo elemento
 
         // Agrega un event listener al input file
         uploadInput.addEventListener('change', function(event) {
@@ -374,6 +383,7 @@
                 predictionDiv.textContent = '';
                 predictionDiv.className = '';
                 riskDiagram.style.display = 'none'; // Oculta el diagrama
+                recommendationDiv.textContent = ''; // Limpia la recomendación
             }
         });
 
@@ -391,18 +401,24 @@
                 const random = Math.random();
                 let prediction = '';
                 let className = '';
+                let recommendation = ''; // Nueva variable para la recomendación
 
                 if (random < 0.5) {
                     prediction = 'BUY';
                     className = 'buy';
+                    recommendation = 'Considera abrir una posición larga.'; // Ejemplo de recomendación
                 } else {
                     prediction = 'SELL';
                     className = 'sell';
+                    recommendation = 'Podría ser momento de una posición corta.'; // Ejemplo de recomendación
                 }
 
                 // Muestra la predicción
                 predictionDiv.textContent = 'Predicción: ' + prediction;
                 predictionDiv.className = className; // Aplica la clase para el color
+
+                // Muestra la recomendación
+                recommendationDiv.textContent = 'Recomendación: ' + recommendation;
             }, 10000); // 10 segundos
         });
     </script>
